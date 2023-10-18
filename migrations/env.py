@@ -29,8 +29,10 @@ fileConfig(config.config_file_name)
 # For auto generate schemas
 from core.config import config
 from app.user.models import User
+from app.device.models import Device, DeviceAutomatedTask, DeviceRaport
+from core.db import Base
 
-target_metadata = User.metadata
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
