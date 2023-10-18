@@ -1,5 +1,6 @@
-from .device.device_report_generator import CSVDeviceReportGenerator
+from .device.device_report_generator import ReportGenerator, ReportGeneratorFactory
 
 __all__ = [
-    "CSVDeviceReportGenerator",
+    "ReportGenerator",
+    "ReportGeneratorFactory",
 ]

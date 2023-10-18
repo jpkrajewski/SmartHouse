@@ -14,8 +14,8 @@ from core.exceptions import (
     DeviceNotFoundException,
 )
 from core.utils.token_helper import TokenHelper
-from core.report_generators import CSVDeviceReportGenerator
-from core.file_uploader import LocalStorgeFileUploader, FileData
+from core.report_generators import ReportGeneratorFactory, ReportGenerator
+from core.file_handler import LocalStorgeFileUploader, FileResponder
 
 
 class DeviceService:
@@ -40,8 +40,7 @@ class DeviceService:
         device_id: int,
         start_date: Optional[str],
         end_date: Optional[str],
-        generator: CSVDeviceReportGenerator = CSVDeviceReportGenerator(),
-        file_uploader: LocalStorgeFileUploader = LocalStorgeFileUploader(),
+        generator: ReportGenerator,
     ) -> Path:
         query = select(Device).where(Device.user_id == user_id)
         result = await session.execute(query)
@@ -51,6 +50,4 @@ class DeviceService:
         #     raise DeviceNotFoundException
 
         csv_data = generator.generate(data)
-        file_data = file_uploader.upload(csv_data)
-
-        return file_data
+        return FileResponder.get_response(csv_data)

@@ -6,6 +6,8 @@ from app.device.services import DeviceService
 from core.fastapi.dependencies import PermissionDependency, AllowAll
 from fastapi.responses import FileResponse
 from app.device.schemas import ExceptionResponseSchema
+from core.file_handler import BaseFileExtension, FileUploadPlace, FileUploaderFactory
+from core.report_generators import ReportGeneratorFactory
 
 
 device_router = APIRouter()
@@ -35,6 +37,12 @@ async def get_device(request: Request, device_id: int):
 async def get_device_report(
     request: Request,
     device_id: int,
+    extension: Annotated[
+        BaseFileExtension, Query(description="Report format")
+    ] = BaseFileExtension.CSV,
+    upload_to: Annotated[
+        FileUploadPlace, Query(description="Save report to")
+    ] = FileUploadPlace.LOCAL,
     start_date: Annotated[
         datetime | None, Query(description="Start date of report")
     ] = None,
@@ -42,11 +50,14 @@ async def get_device_report(
         datetime | None, Query(description="End date of report")
     ] = None,
 ):
-    report_path = await DeviceService().get_device_report(
-        request.user.id, device_id, start_date, end_date
+    generator = ReportGeneratorFactory.create(extension)
+    report_file = await DeviceService().get_device_report(
+        request.user.id, device_id, start_date, end_date, generator
     )
-    return FileResponse(
-        path=report_path.path,
-        filename=report_path.filename,
-        # media_type="application/csv"
+    uploader = FileUploaderFactory.create(upload_to)
+    uploader.upload(report_file)
+    return Response(
+        content=report_file.content,
+        media_type=report_file.media_type,
+        headers=report_file.headers,
     )

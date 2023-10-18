@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 import csv
 import io
-from .enum import ReportData, ReportExtension
+from core.file_handler import BaseFileExtension
+from .data_models import ReportFile
 
 
 class ReportGenerator(ABC):
@@ -13,7 +14,7 @@ class ReportGenerator(ABC):
 
 
 class CSVDeviceReportGenerator(ReportGenerator):
-    EXTENSION = ReportExtension.CSV
+    EXTENSION = BaseFileExtension.CSV
 
     def generate(self, data: dict) -> str:
         buffer = io.StringIO()
@@ -22,19 +23,36 @@ class CSVDeviceReportGenerator(ReportGenerator):
         writer.writerow(header)
         for row_data in [[1, 2], [3, 4], [5, 6]]:
             writer.writerow(row_data)
-        content = buffer.getvalue()
+        content = bytes(buffer.getvalue(), encoding="utf-8")
         buffer.close()
-        return ReportData(
+        return ReportFile(
             content=content,
             extension=self.EXTENSION,
         )
 
 
 class ExcelDeviceReportGenerator(ReportGenerator):
+    EXTENSION = BaseFileExtension.EXCEL
+
     def generate(self, data: dict) -> str:
         pass
 
 
 class PDFDeviceReportGenerator(ReportGenerator):
+    EXTENSION = BaseFileExtension.PDF
+
     def generate(self, data: dict) -> str:
         pass
+
+
+class ReportGeneratorFactory:
+    @staticmethod
+    def create(extension: BaseFileExtension) -> ReportGenerator:
+        if extension == BaseFileExtension.CSV:
+            return CSVDeviceReportGenerator()
+        elif extension == BaseFileExtension.EXCEL:
+            return ExcelDeviceReportGenerator()
+        elif extension == BaseFileExtension.PDF:
+            return PDFDeviceReportGenerator()
+        else:
+            raise ValueError(f"Invalid extension: {extension}")
