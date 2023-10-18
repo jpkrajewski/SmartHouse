@@ -1,6 +1,7 @@
 import os
 
 from pydantic import BaseSettings
+from pathlib import Path
 
 
 class Config(BaseSettings):
@@ -17,6 +18,7 @@ class Config(BaseSettings):
     CELERY_BACKEND_URL: str = "redis://:password123@localhost:6379/0"
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
+    STORAGE_LOCAL_PATH: Path = Path(Path(__file__).parent.parent, "storage")
 
 
 class DevelopmentConfig(Config):

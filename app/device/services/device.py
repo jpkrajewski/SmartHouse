@@ -1,7 +1,8 @@
 from typing import Optional, List
 
 from sqlalchemy import or_, select, and_
-
+import csv
+from pathlib import Path
 from app.user.models import User
 from app.device.models import Device
 from app.user.schemas.user import LoginResponseSchema
@@ -10,8 +11,11 @@ from core.exceptions import (
     PasswordDoesNotMatchException,
     DuplicateEmailOrNicknameException,
     UserNotFoundException,
+    DeviceNotFoundException,
 )
 from core.utils.token_helper import TokenHelper
+from core.report_generators import CSVDeviceReportGenerator
+from core.file_uploader import LocalStorgeFileUploader, FileData
 
 
 class DeviceService:
@@ -29,3 +33,24 @@ class DeviceService:
         query = select(Device).where(Device.user_id == user_id)
         result = await session.execute(query)
         return result.scalars().all()
+
+    async def get_device_report(
+        self,
+        user_id: int,
+        device_id: int,
+        start_date: Optional[str],
+        end_date: Optional[str],
+        generator: CSVDeviceReportGenerator = CSVDeviceReportGenerator(),
+        file_uploader: LocalStorgeFileUploader = LocalStorgeFileUploader(),
+    ) -> Path:
+        query = select(Device).where(Device.user_id == user_id)
+        result = await session.execute(query)
+        data = result.scalars().all()
+
+        # if not data:
+        #     raise DeviceNotFoundException
+
+        csv_data = generator.generate(data)
+        file_data = file_uploader.upload(csv_data)
+
+        return file_data
