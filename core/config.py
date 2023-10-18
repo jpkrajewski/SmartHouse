@@ -27,8 +27,8 @@ class DevelopmentConfig(Config):
 
 
 class LocalConfig(Config):
-    WRITER_DB_URL: str = f"mysql+aiomysql://fastapi:fastapi@localhost:3306/fastapi"
-    READER_DB_URL: str = f"mysql+aiomysql://fastapi:fastapi@localhost:3306/fastapi"
+    WRITER_DB_URL: str = f"sqlite+aiosqlite:///fastapi.db"
+    READER_DB_URL: str = f"sqlite+aiosqlite:///fastapi.db"
 
 
 class ProductionConfig(Config):
