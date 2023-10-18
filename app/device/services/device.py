@@ -29,3 +29,10 @@ class DeviceService:
         query = select(Device).where(Device.user_id == user_id)
         result = await session.execute(query)
         return result.scalars().all()
+
+    def toggle_device(
+        self,
+        user_id: int,
+        turn_on: bool,
+    ):
+        pass
