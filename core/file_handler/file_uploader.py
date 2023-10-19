@@ -3,51 +3,50 @@ from core.config import config
 from pathlib import Path
 import os
 from datetime import datetime
-from .data_models import FileUploadPlace
+from .data_models import FileUploadPlace, BaseFile, FileMetaData
+from fastapi import Request
 
 
 class FileUploader(ABC):
     @abstractmethod
-    def upload(self, data: dict) -> str:
+    def upload(self, file: BaseFile) -> FileMetaData:
         pass
 
 
-class LocalStorgeFileUploader(FileUploader):
-    """
-    Local storage for FastAPI.
-    """
+class NoUploadFileUploader(FileUploader):
+    """No storage for FastAPI."""
 
-    def upload(self, file, folder: str = "files"):
-        """
-        Upload a file to the destination.
-        Args:
-            file UploadFile: File to upload
-        Returns:
-            FileData: Result of file upload
-        """
-        try:
-            dest = Path(config.STORAGE_LOCAL_PATH, folder)
-            if not dest.exists():
-                dest.mkdir(parents=True)
-            file_path = Path(dest, file.filename)
-            with open(file_path, "w") as fh:
-                fh.write(file.content)
-            return True
-        except Exception as err:
-            return False
+    def upload(self, file: BaseFile) -> FileMetaData:
+        return FileMetaData(filename="", path=None)
+
+
+class LocalStorgeFileUploader(FileUploader):
+    """Local storage for FastAPI."""
+
+    def upload(self, file: BaseFile, folder: str = "files") -> FileMetaData:
+        dest = Path(config.STORAGE_LOCAL_PATH, folder)
+        dest.mkdir(parents=True, exist_ok=True)
+        file_path = Path(dest, file.filename)
+        with open(file_path, "w") as f:
+            f.write(file.content)
+        return FileMetaData(filename=file.filename, path=file_path)
 
 
 class S3FileUploader(FileUploader):
-    def save(self, data: dict) -> str:
+    """AWS S3 storage for FastAPI."""
+
+    def upload(self, file: BaseFile) -> FileMetaData:
         pass
 
 
 class FileUploaderFactory:
     @staticmethod
     def create(upload_to: FileUploadPlace) -> FileUploader:
-        if upload_to == FileUploadPlace.LOCAL:
-            return LocalStorgeFileUploader()
-        elif upload_to == FileUploadPlace.AWS:
-            return S3FileUploader()
-        else:
-            raise ValueError("Invalid storage configuration.")
+        file_uploaders = {
+            FileUploadPlace.NO_UPLOAD: NoUploadFileUploader(),
+            FileUploadPlace.LOCAL: LocalStorgeFileUploader(),
+            FileUploadPlace.AWS: S3FileUploader(),
+        }
+        if upload_to in file_uploaders:
+            return file_uploaders[upload_to]
+        raise ValueError("Invalid storage configuration.")

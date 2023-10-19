@@ -9,14 +9,14 @@ class ReportGenerator(ABC):
     EXTENSION = None
 
     @abstractmethod
-    def generate(self, data: dict) -> str:
+    def generate(self, data: dict) -> ReportFile:
         pass
 
 
 class CSVDeviceReportGenerator(ReportGenerator):
     EXTENSION = BaseFileExtension.CSV
 
-    def generate(self, data: dict) -> str:
+    def generate(self, data: dict) -> ReportFile:
         buffer = io.StringIO()
         writer = csv.writer(buffer)
         header = ["1", "2"]
@@ -34,25 +34,25 @@ class CSVDeviceReportGenerator(ReportGenerator):
 class ExcelDeviceReportGenerator(ReportGenerator):
     EXTENSION = BaseFileExtension.EXCEL
 
-    def generate(self, data: dict) -> str:
+    def generate(self, data: dict) -> ReportFile:
         pass
 
 
 class PDFDeviceReportGenerator(ReportGenerator):
     EXTENSION = BaseFileExtension.PDF
 
-    def generate(self, data: dict) -> str:
+    def generate(self, data: dict) -> ReportFile:
         pass
 
 
 class ReportGeneratorFactory:
     @staticmethod
     def create(extension: BaseFileExtension) -> ReportGenerator:
-        if extension == BaseFileExtension.CSV:
-            return CSVDeviceReportGenerator()
-        elif extension == BaseFileExtension.EXCEL:
-            return ExcelDeviceReportGenerator()
-        elif extension == BaseFileExtension.PDF:
-            return PDFDeviceReportGenerator()
-        else:
-            raise ValueError(f"Invalid extension: {extension}")
+        report_generators = {
+            BaseFileExtension.CSV: CSVDeviceReportGenerator(),
+            BaseFileExtension.EXCEL: ExcelDeviceReportGenerator(),
+            BaseFileExtension.PDF: PDFDeviceReportGenerator(),
+        }
+        if extension in report_generators:
+            return report_generators[extension]
+        raise ValueError(f"Invalid extension: {extension}")

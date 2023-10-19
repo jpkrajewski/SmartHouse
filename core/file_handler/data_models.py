@@ -1,6 +1,7 @@
-from pydantic import BaseModel, validator, Field
+from pydantic import BaseModel, validator, Field, AnyHttpUrl, FilePath, FileUrl
 from pathlib import Path
 from enum import Enum
+from typing import Optional, Union
 
 
 class BaseFileExtension(Enum):
@@ -19,8 +20,13 @@ class BaseFile(BaseModel):
         return f"{self.name}.{self.extension.value}"
 
 
+class FileMetaData(BaseModel):
+    filename: str
+    path: Optional[Union[FilePath, FileUrl]]
+
+
 class FileResponse(BaseFile):
-    name: str = Field(exclude=True)
+    metadata: Optional[FileMetaData]
 
     @property
     def headers(self) -> dict:
@@ -32,5 +38,6 @@ class FileResponse(BaseFile):
 
 
 class FileUploadPlace(Enum):
+    NO_UPLOAD = "no_upload"
     AWS = "aws"
     LOCAL = "local"
