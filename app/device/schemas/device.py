@@ -17,3 +17,12 @@ class CreateDeviceRequestSchema(BaseModel):
     name: str = Field(..., description="Name")
     description: str = Field(..., description="Description")
     is_active: bool = Field(..., description="Is active")
+
+
+class GetDeviceRaportListResponseSchema(BaseModel):
+    id: int
+    name: str = Field(..., description="Name")
+    device_id: int
+
+    class Config:
+        orm_mode = True

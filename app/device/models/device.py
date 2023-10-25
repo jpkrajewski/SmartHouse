@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Unicode, Integer, Boolean, ForeignKey
+from sqlalchemy import Column, Unicode, Integer, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
 from core.db import Base
@@ -24,7 +24,14 @@ class DeviceAutomatedTask(Base, TimestampMixin):
     name = Column(Unicode(255), nullable=False)
     description = Column(Unicode(255), nullable=False)
     command = Column(Unicode(255), nullable=False)
+    recurring = Column(Boolean, default=True)
+    is_done = Column(Boolean, default=False)
+    start_date = Column(DateTime, nullable=False)
 
+    invoke_after = Column(
+        Integer, ForeignKey("device_automated_tasks.id"), nullable=True
+    )
+    invoke_after_task = relationship("DeviceAutomatedTask", remote_side=[id])
     device_id = Column(Integer, ForeignKey("devices.id"))
     device = relationship("Device")
     user_id = Column(Integer, ForeignKey("users.id"))
