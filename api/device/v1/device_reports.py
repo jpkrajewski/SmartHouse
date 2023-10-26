@@ -1,7 +1,6 @@
 from typing import List, Annotated
 from datetime import datetime
 from fastapi import APIRouter, Response, Depends, Request, Query
-from app.device.schemas import GetDeviceListResponseSchema
 from app.device.services import DeviceService
 from core.fastapi.dependencies import PermissionDependency, AllowAll
 from fastapi.responses import FileResponse

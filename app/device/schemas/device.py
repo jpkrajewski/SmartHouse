@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 
 
-class GetDeviceListResponseSchema(BaseModel):
+class GetDeviceResponseSchema(BaseModel):
     id: int = Field(..., description="ID")
     name: str = Field(..., description="Name")
     description: str = Field(..., description="Description")
@@ -14,6 +14,11 @@ class GetDeviceListResponseSchema(BaseModel):
 
 
 class CreateDeviceRequestSchema(BaseModel):
+    name: str = Field(..., description="Name")
+    description: str = Field(..., description="Description")
+
+
+class UpdateDeviceRequestSchema(BaseModel):
     name: str = Field(..., description="Name")
     description: str = Field(..., description="Description")
     is_active: bool = Field(..., description="Is active")
