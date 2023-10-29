@@ -1,7 +1,6 @@
 from typing import List, Annotated
 from datetime import datetime
 from fastapi import APIRouter, Response, Depends, Request, Query
-from app.device.schemas import GetDeviceListResponseSchema
 from app.device.services import DeviceService
 from core.fastapi.dependencies import PermissionDependency, AllowAll
 from fastapi.responses import FileResponse
@@ -29,3 +28,16 @@ device_reports_router = APIRouter()
 )
 async def get_device_reports(report=Depends(DeviceService.get_device_reports)):
     return report
+
+
+@device_reports_router.get(
+    "/create-report/{device_id}",
+    response_class=Response,
+    dependencies=[Depends(PermissionDependency([AllowAll]))],
+)
+async def create_report(report=Depends(report_handler)):
+    return Response(
+        content=report.content,
+        media_type=report.media_type,
+        headers=report.headers,
+    )
