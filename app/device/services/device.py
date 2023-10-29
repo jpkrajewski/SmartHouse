@@ -15,6 +15,13 @@ from core.exceptions import (
     UserNotFoundException,
     DeviceNotFoundException,
 )
+from app.device.schemas import (
+    GetDeviceResponseSchema,
+    CreateDeviceRequestSchema,
+    UpdateDeviceRequestSchema,
+    DeleteDeviceResponseSchema,
+    UpdateDeviceResponseSchema,
+)
 from core.utils.token_helper import TokenHelper
 from core.report_generators import ReportGeneratorFactory, ReportGenerator
 from core.file_handler import LocalStorgeFileUploader
@@ -28,15 +35,12 @@ from core.file_handler import FileMetaData
 class DeviceService:
     @staticmethod
     async def get_device_list(
-        user_id: int,
-        limit: int = 10,
-        prev: Optional[int] = None,
+        request: Request,
     ) -> List[Device]:
-        query = select(Device).where(Device.user_id == user_id)
+        query = select(Device).where(Device.user_id == request.user.id)
         result = await session.execute(query)
         return result.scalars().all()
 
-    @Transactional()
     @staticmethod
     async def get_device(
         request: Request,
@@ -46,7 +50,7 @@ class DeviceService:
             Device.id == device_id, Device.user_id == request.user.id
         )
         result = await session.execute(query)
-        return result.scalar().first()
+        return result.scalar()
 
     @Transactional()
     @staticmethod
@@ -54,44 +58,49 @@ class DeviceService:
         request: Request,
         request_data: CreateDeviceRequestSchema,
     ) -> Device:
-        new_device = Device(
+        device = Device(
             user_id=request.user.id,
             name=request_data.name,
             description=request_data.description,
         )
-        session.add(new_device)
-        return new_device
+        session.add(device)
+        return device
 
     @Transactional()
     @staticmethod
     async def delete_device(
         request: Request,
         device_id: int,
-    ) -> None:
+    ) -> DeleteDeviceResponseSchema:
         query = delete(Device).where(
             Device.id == device_id, Device.user_id == request.user.id
         )
-        existing_device = await session.execute(query)
-        if existing_device is None:
+        result = await session.execute(query)
+        if result.rowcount == 0:
             raise DeviceNotFoundException
-        session.delete(existing_device)
+        return DeleteDeviceResponseSchema(id=device_id)
 
     @Transactional()
     @staticmethod
     async def update_device(
         request: Request,
         device_id: int,
-        new_data: CreateDeviceRequestSchema,
-    ) -> Device:
-        query = update(Device).where(
-            Device.id == device_id
-        ).values(
-            name=new_data.name,
-            description = new_data.description
+        data: UpdateDeviceRequestSchema,
+    ) -> UpdateDeviceResponseSchema:
+        query = (
+            update(Device)
+            .where(Device.id == device_id, Device.user_id == request.user.id)
+            .values(name=data.name, description=data.description)
         )
         result = await session.execute(query)
-        device = result.scalar()
-        return device
+        if result.rowcount == 0:
+            raise DeviceNotFoundException
+        return UpdateDeviceResponseSchema(
+            id=device_id,
+            name=data.name,
+            description=data.description,
+            is_active=data.is_active,
+        )
 
     @staticmethod
     async def get_device_reportable_data(
@@ -107,13 +116,9 @@ class DeviceService:
         """Get device info and other history data."""
         query = select(Device).where(Device.user_id == request.user.id)
         result = await session.execute(query)
-        data = result.scalars().all()
-        # if not data:
-        #     raise DeviceNotFoundException
-
-        # start_date end_date filter
-
-        return data
+        if not result:
+            raise DeviceNotFoundException
+        return result.scalars().all()
 
     @Transactional()
     @staticmethod
@@ -193,3 +198,13 @@ class DeviceService:
             .delete()
         )
         return result
+
+    @staticmethod
+    async def get_device_automated_task_list(
+        request: Request,
+    ) -> List[DeviceAutomatedTask]:
+        query = select(DeviceAutomatedTask).where(
+            DeviceAutomatedTask.user_id == request.user.id
+        )
+        result = await session.execute(query)
+        return result.scalars().all()

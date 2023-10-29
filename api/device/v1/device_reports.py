@@ -35,9 +35,7 @@ async def get_device_reports(report=Depends(DeviceService.get_device_reports)):
     response_class=Response,
     dependencies=[Depends(PermissionDependency([AllowAll]))],
 )
-async def create_report(
-    report = Depends(report_handler)
-):
+async def create_report(report=Depends(report_handler)):
     return Response(
         content=report.content,
         media_type=report.media_type,
