@@ -1,9 +1,5 @@
+import logging
 from typing import List
-
-from fastapi import FastAPI, Request, Depends
-from fastapi.middleware import Middleware
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 
 from api import router
 from api.home.home import home_router
@@ -11,12 +7,20 @@ from core.config import config
 from core.exceptions import CustomException
 from core.fastapi.dependencies import Logging
 from core.fastapi.middlewares import (
-    AuthenticationMiddleware,
     AuthBackend,
-    SQLAlchemyMiddleware,
+    AuthenticationMiddleware,
     ResponseLogMiddleware,
+    SQLAlchemyMiddleware,
 )
-from core.helpers.cache import Cache, RedisBackend, CustomKeyMaker
+from core.helpers.cache import Cache, CustomKeyMaker, RedisBackend
+from core.mqtt.client import MQTTClient
+from fastapi import Depends, FastAPI, Request
+from fastapi.middleware import Middleware
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def init_routers(app_: FastAPI) -> None:
@@ -32,6 +36,12 @@ def init_listeners(app_: FastAPI) -> None:
             status_code=exc.code,
             content={"error_code": exc.error_code, "message": exc.message},
         )
+
+
+def init_mqtt(app_: FastAPI) -> None:
+    client = MQTTClient()
+    logger.info(type(client))
+    client.init_app(app_)
 
 
 def on_auth_error(request: Request, exc: Exception):
@@ -73,7 +83,7 @@ def init_cache() -> None:
 
 def create_app() -> FastAPI:
     app_ = FastAPI(
-        title="Hide",
+        title="Smart House",
         description="Hide API",
         version="1.0.0",
         docs_url=None if config.ENV == "production" else "/docs",
@@ -83,6 +93,7 @@ def create_app() -> FastAPI:
     )
     init_routers(app_=app_)
     init_listeners(app_=app_)
+    init_mqtt(app_=app_)
     init_cache()
     return app_
 

@@ -1,16 +1,15 @@
 from typing import List
 
-from fastapi import APIRouter, Response, Depends, Request
 from app.device.schemas import (
-    GetDeviceResponseSchema,
-    CreateDeviceRequestSchema,
-    UpdateDeviceRequestSchema,
     DeleteDeviceResponseSchema,
+    GetDeviceResponseSchema,
     UpdateDeviceResponseSchema,
 )
 from app.device.services import DeviceService
-from core.fastapi.dependencies import PermissionDependency, AllowAll, IsAuthenticated
-
+from core.fastapi.dependencies import AllowAll, IsAuthenticated, PermissionDependency
+from core.mqtt.client import get_mqtt_client
+from fastapi import APIRouter, Depends, Request, Response
+from fastapi_mqtt.fastmqtt import FastMQTT
 
 device_router = APIRouter()
 
@@ -64,6 +63,15 @@ async def update_device(
     result=Depends(DeviceService.update_device),
 ):
     return result
+
+
+@device_router.post(
+    "/{device_id}/publish",
+    dependencies=[Depends(PermissionDependency([AllowAll]))],
+)
+async def publish_device(device_id: int, client: FastMQTT = Depends(get_mqtt_client)):
+    client.publish("test", "test")
+    return Response(status_code=200)
 
 
 # "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0LCJleHAiOjE2OTg2MDQ5NzJ9.hFeF_SqumJ8HY5inEcAprGtBb0BEsDpa-_7GFxah-8c"
