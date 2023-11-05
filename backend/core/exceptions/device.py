@@ -1,5 +1,6 @@
-from core.exceptions import CustomException
 from http import HTTPStatus
+
+from core.exceptions import CustomException
 
 
 class DeviceNotFoundException(CustomException):

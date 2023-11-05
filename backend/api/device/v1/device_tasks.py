@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends
 from typing import List
+
 from app.device.schemas import GetDeviceAutomatedTaskResponseSchema
 from app.device.services import DeviceService
-from core.fastapi.dependencies import PermissionDependency, IsAuthenticated
-
+from core.fastapi.dependencies import IsAuthenticated, PermissionDependency
+from fastapi import APIRouter, Depends
 
 device_tasks_router = APIRouter()
 

@@ -2,7 +2,6 @@ import os
 
 import click
 import uvicorn
-
 from core.config import config
 
 

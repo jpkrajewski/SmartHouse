@@ -96,12 +96,12 @@ After line 18, assign values that you added on `CurrentUser`.
 
 Set a callable function when initialize FastAPI() app through `dependencies` argument.
 
-Refer `Logging` class inside of `core/fastapi/dependencies/logging.py` 
+Refer `Logging` class inside of `core/fastapi/dependencies/logging.py`
 
 ## Dependencies for specific permissions
 
 Permissions `IsAdmin`, `IsAuthenticated`, `AllowAll` have already been implemented.
- 
+
 ```python
 from core.fastapi.dependencies import (
     PermissionDependency,

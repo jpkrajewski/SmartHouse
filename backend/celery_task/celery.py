@@ -1,6 +1,6 @@
 from celery import Celery
-from core.config import config
 from celery.schedules import crontab
+from core.config import config
 
 app = Celery("smart_house_automation")
 

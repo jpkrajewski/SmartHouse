@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Response
-
 from api.auth.request.auth import RefreshTokenRequest, VerifyTokenRequest
 from api.auth.response.auth import RefreshTokenResponse
 from app.auth.services.jwt import JwtService
 from app.user.schemas import ExceptionResponseSchema
+from fastapi import APIRouter, Response
 
 auth_router = APIRouter()
 
@@ -14,9 +13,7 @@ auth_router = APIRouter()
     responses={"400": {"model": ExceptionResponseSchema}},
 )
 async def refresh_token(request: RefreshTokenRequest):
-    token = await JwtService().create_refresh_token(
-        token=request.token, refresh_token=request.refresh_token
-    )
+    token = await JwtService().create_refresh_token(token=request.token, refresh_token=request.refresh_token)
     return {"token": token.token, "refresh_token": token.refresh_token}
 
 

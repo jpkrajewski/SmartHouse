@@ -1,7 +1,6 @@
-from sqlalchemy import Column, Unicode, BigInteger, Boolean, Integer
-
 from core.db import Base
 from core.db.mixins import TimestampMixin
+from sqlalchemy import Boolean, Column, Integer, Unicode
 
 
 class User(Base, TimestampMixin):

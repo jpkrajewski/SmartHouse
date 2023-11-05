@@ -1,7 +1,7 @@
-from fastapi import Depends, Query, Request
 from app.device.services import DeviceService
-from core.file_handler import FileUploaderFactory, FileUploader, FileResponse
-from core.report_generators import ReportGeneratorFactory, ReportGenerator
+from core.file_handler import FileResponse, FileUploader, FileUploaderFactory
+from core.report_generators import ReportGenerator, ReportGeneratorFactory
+from fastapi import Depends, Request
 
 
 async def report_creation_handler(
@@ -19,7 +19,5 @@ async def report_handler(
     device_id: int,
     file: FileResponse = Depends(report_creation_handler),
 ):
-    await DeviceService.create_device_raport_metadata(
-        request, device_id, file=file.metadata
-    )
+    await DeviceService.create_device_raport_metadata(request, device_id, file=file.metadata)
     return file

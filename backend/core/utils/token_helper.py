@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 
 import jwt
-
 from core.config import config
 from core.exceptions import DecodeTokenException, ExpiredTokenException
 

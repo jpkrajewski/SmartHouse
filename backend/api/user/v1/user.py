@@ -1,17 +1,16 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, Query
-
 from api.user.v1.request.user import LoginRequest
 from api.user.v1.response.user import LoginResponse
 from app.user.schemas import (
-    ExceptionResponseSchema,
-    GetUserListResponseSchema,
     CreateUserRequestSchema,
     CreateUserResponseSchema,
+    ExceptionResponseSchema,
+    GetUserListResponseSchema,
 )
 from app.user.services import UserService
-from core.fastapi.dependencies import PermissionDependency, IsAdmin, IsAuthenticated
+from core.fastapi.dependencies import IsAuthenticated, PermissionDependency
+from fastapi import APIRouter, Depends, Query
 
 user_router = APIRouter()
 

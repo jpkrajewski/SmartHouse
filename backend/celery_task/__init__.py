@@ -1,7 +1,6 @@
 from celery import Celery
 from core.config import config
 
-
 celery_app = Celery(
     "worker",
     backend=config.CELERY_BACKEND_URL,

@@ -2,7 +2,6 @@ import pickle
 from typing import Any
 
 import ujson
-
 from core.helpers.cache.base import BaseBackend
 from core.helpers.redis import redis
 

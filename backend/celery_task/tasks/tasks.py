@@ -1,6 +1,7 @@
-from celery import shared_task
+from datetime import datetime
+
 from app.device.services.device import DeviceService
-from datetime import datetime, timedelta
+from celery import shared_task
 
 
 @shared_task

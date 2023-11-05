@@ -1,7 +1,9 @@
-from abc import ABC, abstractmethod
 import csv
 import io
+from abc import ABC, abstractmethod
+
 from core.file_handler import BaseFileExtension
+
 from .data_models import ReportFile
 
 

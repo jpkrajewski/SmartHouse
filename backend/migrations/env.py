@@ -26,11 +26,10 @@ fileConfig(config.config_file_name)
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 
+
 # For auto generate schemas
-from core.config import config
-from app.user.models import User
-from app.device.models import Device, DeviceAutomatedTask, DeviceRaport
-from core.db import Base
+from core.config import config  # noqa E402
+from core.db import Base  # noqa E402
 
 target_metadata = Base.metadata
 
@@ -49,7 +48,7 @@ def run_migrations_offline():
     Calls to context.execute() here emit the given string to the
     script output.
     """
-    url = config.get_main_option("sqlalchemy.url")
+    config.get_main_option("sqlalchemy.url")
     context.configure(
         url=config.WRITER_DB_URL,
         target_metadata=target_metadata,

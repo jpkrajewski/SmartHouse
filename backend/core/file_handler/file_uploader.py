@@ -1,10 +1,9 @@
 from abc import ABC, abstractmethod
-from core.config import config
 from pathlib import Path
-import os
-from datetime import datetime
-from .data_models import FileUploadPlace, BaseFile, FileMetaData
-from fastapi import Request
+
+from core.config import config
+
+from .data_models import BaseFile, FileMetaData, FileUploadPlace
 
 
 class FileUploader(ABC):

@@ -1,9 +1,8 @@
-from typing import TypeVar, Type, Optional, Generic
-
-from sqlalchemy import select, update, delete
+from typing import Generic, Optional, Type, TypeVar
 
 from core.db.session import Base, session
 from core.repository.enum import SynchronizeSessionEnum
+from sqlalchemy import delete, select, update
 
 ModelType = TypeVar("ModelType", bound=Base)
 
@@ -38,11 +37,7 @@ class BaseRepo(Generic[ModelType]):
         id: int,
         synchronize_session: SynchronizeSessionEnum = False,
     ) -> None:
-        query = (
-            delete(self.model)
-            .where(self.model.id == id)
-            .execution_options(synchronize_session=synchronize_session)
-        )
+        query = delete(self.model).where(self.model.id == id).execution_options(synchronize_session=synchronize_session)
         await session.execute(query)
 
     async def save(self, model: ModelType) -> ModelType:

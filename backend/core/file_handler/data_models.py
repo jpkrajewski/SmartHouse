@@ -1,7 +1,7 @@
-from pydantic import BaseModel, validator, Field, AnyHttpUrl, FilePath, FileUrl
-from pathlib import Path
 from enum import Enum
 from typing import Optional, Union
+
+from pydantic import BaseModel, FilePath, FileUrl
 
 
 class BaseFileExtension(Enum):

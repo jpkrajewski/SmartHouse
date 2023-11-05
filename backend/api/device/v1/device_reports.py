@@ -1,22 +1,10 @@
-from typing import List, Annotated
-from datetime import datetime
-from fastapi import APIRouter, Response, Depends, Request, Query
+from typing import List
+
+from app.device.dependencies.report import report_handler
+from app.device.schemas import GetDeviceRaportListResponseSchema
 from app.device.services import DeviceService
-from core.fastapi.dependencies import PermissionDependency, AllowAll
-from fastapi.responses import FileResponse
-from app.device.schemas import (
-    ExceptionResponseSchema,
-    GetDeviceRaportListResponseSchema,
-)
-from core.file_handler import (
-    BaseFileExtension,
-    FileUploadPlace,
-    FileUploaderFactory,
-    FileResponse,
-)
-from core.report_generators import ReportGeneratorFactory
-from app.device.dependencies.report import report_creation_handler, report_handler
-from app.device.services import DeviceService
+from core.fastapi.dependencies import AllowAll, PermissionDependency
+from fastapi import APIRouter, Depends, Response
 
 device_reports_router = APIRouter()
 
