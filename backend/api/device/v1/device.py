@@ -70,7 +70,7 @@ async def update_device(
     dependencies=[Depends(PermissionDependency([AllowAll]))],
 )
 async def publish_device(device_id: int, client: FastMQTT = Depends(get_mqtt_client)):
-    client.publish("test", "test")
+    client.publish("smarthouse", "test")
     return Response(status_code=200)
 
 

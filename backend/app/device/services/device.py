@@ -34,6 +34,12 @@ class DeviceService:
         result = await session.execute(query)
         return result.scalar()
 
+    @staticmethod
+    async def get_devices_hash() -> List[str]:
+        query = select(Device.hash)
+        result = await session.execute(query)
+        return result.scalars().all()
+
     @Transactional()
     @staticmethod
     async def create_device(

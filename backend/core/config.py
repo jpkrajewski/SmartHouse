@@ -19,6 +19,7 @@ class Config(BaseSettings):
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
     STORAGE_LOCAL_PATH: Path = Path(Path(__file__).parent.parent, "storage")
+    MQTT_NAMESPACE: str = "smarthouse"
 
 
 class DevelopmentConfig(Config):

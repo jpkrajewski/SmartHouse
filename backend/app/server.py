@@ -1,4 +1,3 @@
-import logging
 from typing import List
 
 from api import router
@@ -19,9 +18,6 @@ from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 
 def init_routers(app_: FastAPI) -> None:
     app_.include_router(home_router)
@@ -40,7 +36,6 @@ def init_listeners(app_: FastAPI) -> None:
 
 def init_mqtt(app_: FastAPI) -> None:
     client = MQTTClient()
-    logger.info(type(client))
     client.init_app(app_)
 
 
@@ -91,9 +86,9 @@ def create_app() -> FastAPI:
         dependencies=[Depends(Logging)],
         middleware=make_middleware(),
     )
+    init_mqtt(app_=app_)
     init_routers(app_=app_)
     init_listeners(app_=app_)
-    init_mqtt(app_=app_)
     init_cache()
     return app_
 

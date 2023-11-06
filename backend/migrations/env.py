@@ -27,16 +27,20 @@ fileConfig(config.config_file_name)
 # target_metadata = mymodel.Base.metadata
 
 
+from app.device.models.device import (  # noqa E402
+    Device,
+    DeviceAutomatedTask,
+    DeviceMeasurement,
+    DeviceRaport,
+)
+from app.user.models.user import User  # noqa E402
+
 # For auto generate schemas
+# https://stackoverflow.com/a/62925227
 from core.config import config  # noqa E402
 from core.db import Base  # noqa E402
 
 target_metadata = Base.metadata
-
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-# ... etc.
 
 
 def run_migrations_offline():

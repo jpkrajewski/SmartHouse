@@ -17,6 +17,16 @@ class Device(Base, TimestampMixin):
     user = relationship("User")
 
 
+class DeviceMeasurement(Base, TimestampMixin):
+    __tablename__ = "device_measurements"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    type = Column(Unicode(255), nullable=False)
+    value = Column(Unicode(255), nullable=False)
+    device_id = Column(Integer, ForeignKey("devices.id"))
+    device = relationship("Device")
+
+
 class DeviceAutomatedTask(Base, TimestampMixin):
     __tablename__ = "device_automated_tasks"
 
