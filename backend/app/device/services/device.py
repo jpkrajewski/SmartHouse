@@ -92,10 +92,10 @@ class DeviceService:
     async def get_device_reportable_data(
         request: Request,
         device_id: int,
-        start_date: Annotated[datetime, Query()] = Query(
+        start_date: Annotated[datetime, Query] = Query(
             None, description="Start raport data details starting this datatime"
         ),
-        end_date: Annotated[datetime, Query()] = Query(None, description="Raport data details to this datatime"),
+        end_date: Annotated[datetime, Query] = Query(None, description="Raport data details to this datatime"),
     ) -> list[Device]:
         """Get device info and other history data."""
         query = select(Device).where(Device.user_id == request.user.id)

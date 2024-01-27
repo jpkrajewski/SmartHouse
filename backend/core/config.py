@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class Config(BaseSettings):
@@ -35,7 +35,7 @@ class LocalConfig(Config):
 
 
 class ProductionConfig(Config):
-    DEBUG: str = False
+    DEBUG: bool = False
     WRITER_DB_URL: str = "mysql+aiomysql://fastapi:fastapi@localhost:3306/prod"
     READER_DB_URL: str = "mysql+aiomysql://fastapi:fastapi@localhost:3306/prod"
 
