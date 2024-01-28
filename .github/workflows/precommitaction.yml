@@ -25,5 +25,5 @@ jobs:
         key: pre-commit-3|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
     - name: Run Pre-Commit
       working-directory: backend
-      run: git init && git add . && pre-commit install && pre-commit run --show-diff-on-failure --color=always
+      run: git init && git add . && pre-commit install && pre-commit run check-yaml --show-diff-on-failure --color=always && pre-commit run black --show-diff-on-failure --color=always && pre-commit run ruff --show-diff-on-failure --color=always
       shell: bash
