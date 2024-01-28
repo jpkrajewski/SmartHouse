@@ -5,9 +5,7 @@ on:
     branches: [master]
   pull_request:
 
-defaults:
- run:
-  working-directory: backend
+
 
 jobs:
   analyze_code:
