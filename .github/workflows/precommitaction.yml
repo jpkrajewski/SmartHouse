@@ -1,5 +1,11 @@
 name: pre-commit
 description: run pre-commit
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
 inputs:
   extra_args:
     description: options to pass to pre-commit run
