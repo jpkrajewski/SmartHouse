@@ -38,15 +38,15 @@ class MQTTClient:
             reconnect_retries=int(os.getenv("MQTT_RECONNECT_RETRIES")),
             ssl=ssl_context,
         )
+        cls.startup_topic = os.getenv("MQTT_TOPIC")
         cls.instance = FastMQTT(connection_config, **client_config)
 
     @classmethod
     def _configure_handlers(cls):
         @cls.instance.on_connect()
         def connect(client, flags, rc, properties):
-            for topic in cls.startup_topics:
-                client.subscribe(topic, qos=2)
-                logger.info(topic)
+            client.subscribe(cls.startup_topic, qos=2)
+            logger.info(cls.startup_topic)
 
         @cls.instance.on_message()
         async def message(client, topic, payload, qos, properties):
