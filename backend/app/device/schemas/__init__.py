@@ -1,5 +1,1 @@
-from .device import *
-
-
-class ExceptionResponseSchema(BaseModel):
-    error: str
+from .device import *  # noqa: F403

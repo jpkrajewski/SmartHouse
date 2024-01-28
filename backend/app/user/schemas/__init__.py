@@ -1,5 +1,1 @@
-from .user import *
-
-
-class ExceptionResponseSchema(BaseModel):
-    error: str
+from .user import *  # noqa: F403

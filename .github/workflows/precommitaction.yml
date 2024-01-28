@@ -1,26 +1,29 @@
 name: pre-commit
-description: run pre-commit
 
 on:
   push:
     branches: [master]
   pull_request:
 
-inputs:
-  extra_args:
-    description: options to pass to pre-commit run
-    required: false
-    default: '--all-files'
-runs:
-  using: composite
-  steps:
-  - run: python -m pip install pre-commit
-    shell: bash
-  - run: python -m pip freeze --local
-    shell: bash
-  - uses: actions/cache@v3
-    with:
-      path: ~/.cache/pre-commit
-      key: pre-commit-3|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
-  - run: pre-commit run --show-diff-on-failure --color=always ${{ inputs.extra_args }}
-    shell: bash
+
+
+jobs:
+  analyze_code:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Install Pre-Commit
+      run: python -m pip install pre-commit
+      shell: bash
+    - name: Show installed packages
+      run: python -m pip freeze --local
+      shell: bash
+    - uses: actions/checkout@v3
+    - uses: actions/cache@v3
+      with:
+        path: ~/.cache/pre-commit
+        key: pre-commit-3|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
+    - name: Run Pre-Commit
+      working-directory: backend
+      run: git init && git add . && pre-commit install && pre-commit run check-yaml --show-diff-on-failure --color=always && pre-commit run black --show-diff-on-failure --color=always && pre-commit run ruff --show-diff-on-failure --color=always
+      shell: bash
