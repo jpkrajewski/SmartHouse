@@ -1,13 +1,17 @@
 from pydantic import BaseModel, Field
 
 
+class ExceptionResponseSchema(BaseModel):
+    error: str
+
+
 class GetUserListResponseSchema(BaseModel):
     id: int = Field(..., description="ID")
     email: str = Field(..., description="Email")
     nickname: str = Field(..., description="Nickname")
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CreateUserRequestSchema(BaseModel):
@@ -22,7 +26,7 @@ class CreateUserResponseSchema(BaseModel):
     nickname: str = Field(..., description="Nickname")
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class LoginResponseSchema(BaseModel):

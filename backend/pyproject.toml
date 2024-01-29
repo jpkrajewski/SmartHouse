@@ -27,6 +27,7 @@ pytest = "^7.4.3"
 nest-asyncio = "^1.5.8"
 fastapi-mqtt = "^2.1.0"
 pydantic-settings = "^2.1.0"
+paho-mqtt = "^1.6.1"
 
 [tool.poetry.dev-dependencies]
 behave = "^1.2.6"

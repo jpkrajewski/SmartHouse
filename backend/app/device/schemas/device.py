@@ -10,7 +10,7 @@ class GetDeviceResponseSchema(BaseModel):
     user_id: int = Field(..., description="User ID")
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class DeleteDeviceResponseSchema(BaseModel):
@@ -41,7 +41,7 @@ class GetDeviceRaportListResponseSchema(BaseModel):
     device_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class GetDeviceAutomatedTaskResponseSchema(BaseModel):
@@ -57,4 +57,4 @@ class GetDeviceAutomatedTaskResponseSchema(BaseModel):
     user_id: int = Field(..., description="User ID")
 
     class Config:
-        orm_mode = True
+        from_attributes = True

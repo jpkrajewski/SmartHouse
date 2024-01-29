@@ -35,6 +35,13 @@ class DeviceService:
         return result.scalar()
 
     @staticmethod
+    async def get_device_by_id(
+        device_id: int,
+    ) -> Device:
+        query = select(Device).where(Device.id == device_id)
+        return await session.execute(query).scalar().first()
+
+    @staticmethod
     async def get_devices_hash() -> List[str]:
         query = select(Device.hash)
         result = await session.execute(query)
