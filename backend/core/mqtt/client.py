@@ -1,6 +1,8 @@
 import os
 import ssl
 
+from app.device.services import add_measurement
+from core.mqtt.payload_converter import convert
 from dotenv import load_dotenv
 from fastapi_mqtt.fastmqtt import FastMQTT, MQTTConfig
 from uvicorn.config import logger
@@ -10,7 +12,6 @@ class MQTTClient:
     """Singleton MQTT client implementation."""
 
     instance = None
-    startup_topics = ["42342343243424424nfunu3"]
 
     def __new__(cls) -> FastMQTT:
         if cls.instance is None:
@@ -52,6 +53,7 @@ class MQTTClient:
         async def message(client, topic, payload, qos, properties):
             logger.info("MQTT client message received")
             logger.info(f"{topic}: {payload.decode()}")
+            await add_measurement(convert(payload.decode()))
 
         @cls.instance.on_disconnect()
         def disconnect(client, packet, exc=None):

@@ -18,7 +18,7 @@ device_router = APIRouter()
     "",
     response_model=List[GetDeviceResponseSchema],
     response_model_exclude={"user_id"},
-    dependencies=[Depends(PermissionDependency([IsAuthenticated]))],
+    dependencies=[Depends(PermissionDependency([AllowAll]))],
 )
 async def get_devices(result=Depends(DeviceService.get_device_list)):
     return result
@@ -70,7 +70,7 @@ async def update_device(
     dependencies=[Depends(PermissionDependency([AllowAll]))],
 )
 async def publish_device(device_id: int, payload: dict, client: FastMQTT = Depends(get_mqtt_client)):
-    client.publish("giga/esp8266", payload)
+    client.publish(client.startup_topic, payload)
     return Response(status_code=200)
 
 
